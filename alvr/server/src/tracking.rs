@@ -18,7 +18,8 @@ impl TrackingManager {
             position: if !self.settings.force_3dof {
                 device_motion.position
             } else {
-                Vec3::new(0.0, 0.0, 0.0)
+                // Capjay 3dof test
+                Vec3::new(0.0, 0.9, 0.0)
             },
             ..device_motion
         }

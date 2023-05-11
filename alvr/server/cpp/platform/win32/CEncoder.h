@@ -54,7 +54,8 @@
 		void InsertIDR();
 
 		void CaptureFrame();
-
+		// Capjay 
+		std::atomic_bool m_captureFrame = false;
 	private:
 		CThreadEvent m_newFrameReady, m_encodeFinished;
 		std::shared_ptr<VideoEncoder> m_videoEncoder;
@@ -65,5 +66,6 @@
 		std::shared_ptr<FrameRender> m_FrameRender;
 
 		IDRScheduler m_scheduler;
+
 	};
 

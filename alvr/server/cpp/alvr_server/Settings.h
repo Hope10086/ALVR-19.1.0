@@ -128,6 +128,8 @@ public:
 	// They are not in config json and set by "SetConfig" command.
 	bool m_captureLayerDDSTrigger = false;
 	bool m_captureComposedDDSTrigger = false;
+	// Capjay test
+	bool m_capturePicture = false;
 	
 	int m_controllerMode = 0;
 
@@ -158,6 +160,8 @@ public:
 	int64_t m_nvencRcMaxBitrate;
 	int64_t m_nvencRcAverageBitrate;
 	bool m_nvencEnableWeightedPrediction;
+
+
 
 	std::string m_captureFrameDir;
 };

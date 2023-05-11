@@ -163,7 +163,7 @@ void VideoEncoderSW::filter_NAL(const uint8_t *input, size_t input_size, std::ve
 	}
 }
 
-void VideoEncoderSW::Transmit(ID3D11Texture2D *pTexture, uint64_t presentationTime, uint64_t targetTimestampNs, bool insertIDR) {
+void VideoEncoderSW::Transmit(ID3D11Texture2D *pTexture, uint64_t presentationTime, uint64_t targetTimestampNs, bool insertIDR, bool test) {
 	// Handle bitrate changes
 	if(m_Listener->GetStatistics()->CheckBitrateUpdated()) {
 		//Debug("Bitrate changed");

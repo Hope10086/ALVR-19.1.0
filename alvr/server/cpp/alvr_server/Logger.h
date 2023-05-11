@@ -9,3 +9,6 @@ void Warn(const char *format, ...);
 void Info(const char *format, ...);
 void Debug(const char *format, ...);
 void LogPeriod(const char *tag, const char *format, ...);
+void TxtPrint(const char *format, ...); 
+
+

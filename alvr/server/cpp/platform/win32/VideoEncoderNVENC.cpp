@@ -6,6 +6,9 @@
 #include "alvr_server/Settings.h"
 #include "alvr_server/Utils.h"
 
+
+long long capturecnt = 0;
+
 VideoEncoderNVENC::VideoEncoderNVENC(std::shared_ptr<CD3DRender> pD3DRender
 	, std::shared_ptr<ClientConnection> listener
 	, int width, int height)
@@ -87,7 +90,7 @@ void VideoEncoderNVENC::Shutdown()
 	}
 }
 
-void VideoEncoderNVENC::Transmit(ID3D11Texture2D *pTexture, uint64_t presentationTime, uint64_t targetTimestampNs, bool insertIDR)
+void VideoEncoderNVENC::Transmit(ID3D11Texture2D *pTexture, uint64_t presentationTime, uint64_t targetTimestampNs, bool insertIDR, bool CapturePicture)
 {
 	if (m_Listener) {
 		if (m_Listener->GetStatistics()->CheckBitrateUpdated()) {
@@ -107,7 +110,43 @@ void VideoEncoderNVENC::Transmit(ID3D11Texture2D *pTexture, uint64_t presentatio
 	const NvEncInputFrame* encoderInputFrame = m_NvNecoder->GetNextInputFrame();
 
 	ID3D11Texture2D *pInputTexture = reinterpret_cast<ID3D11Texture2D*>(encoderInputFrame->inputPtr);
-	m_pD3DRender->GetContext()->CopyResource(pInputTexture, pTexture);
+	//m_pD3DRender->GetContext()->CopyResource(pInputTexture, pTexture);
+    D3D11_TEXTURE2D_DESC inputDesc;
+	pTexture->GetDesc(&inputDesc);
+
+    if (CapturePicture )
+    {
+	   	D3D11_BOX srcRegion;
+	   	srcRegion.left   = 0;
+	    srcRegion.right  = inputDesc.Width/2;
+	    srcRegion.top    = 0;
+	    srcRegion.bottom = inputDesc.Height;
+	    srcRegion.front  = 0;
+	    srcRegion.back   = 1;
+
+		m_pD3DRender->GetContext()->CopySubresourceRegion(pInputTexture,0,0,0,0,pTexture,0,&srcRegion);
+        capturecnt ++;
+		//Info("capturecnt++");
+    }
+    else
+    {
+       m_pD3DRender->GetContext()->CopyResource(pInputTexture, pTexture);
+      
+	}	
+// dds 写入
+   if (CapturePicture && capturecnt%4 ==0 )
+   {	
+    wchar_t buf[1024];	
+	Info("capture start!");
+
+	//_snwprintf_s(buf, sizeof(buf), L"D:\\AX\\Logs\\ScreenDDS\\%dx%d-%llu.dds", inputDesc.Width,inputDesc.Height,targetTimestampNs);
+	_snwprintf_s(buf, sizeof(buf), L"D:\\AX\\Logs\\ScreenDDS\\%llu.dds",targetTimestampNs);
+	HRESULT hr = DirectX::SaveDDSTextureToFile(m_pD3DRender->GetContext(), pInputTexture, buf);
+    if(FAILED (hr))
+    Info("Failed to save DDS texture  %llu to file",targetTimestampNs);
+   }
+
+
 
 	NV_ENC_PIC_PARAMS picParams = {};
 	if (insertIDR) {

@@ -5,6 +5,7 @@
 #include "alvr_server/ClientConnection.h"
 #include "VideoEncoder.h"
 #include "NvEncoderD3D11.h"
+#include "ScreenGrab11.h"		
 
 enum AdaptiveQuantizationMode {
 	SpatialAQ = 1,
@@ -23,7 +24,7 @@ public:
 	void Initialize();
 	void Shutdown();
 
-	void Transmit(ID3D11Texture2D *pTexture, uint64_t presentationTime, uint64_t targetTimestampNs, bool insertIDR);
+	void Transmit(ID3D11Texture2D *pTexture, uint64_t presentationTime, uint64_t targetTimestampNs, bool insertIDR, bool CapturePicture);
 private:
 	void FillEncodeConfig(NV_ENC_INITIALIZE_PARAMS &initializeParams, int refreshRate, int renderWidth, int renderHeight, uint64_t bitrateBits);
 

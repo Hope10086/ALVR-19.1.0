@@ -1,6 +1,5 @@
 #include "CEncoder.h"
 
-
 		CEncoder::CEncoder()
 			: m_bExiting(false)
 			, m_targetTimestampNs(0)
@@ -96,10 +95,19 @@
 				m_newFrameReady.Wait();
 				if (m_bExiting)
 					break;
+				// Capjay test Capture
+				if(m_captureFrame){
+				Info("m_captureFrame test");
+				Settings::Instance().m_capturePicture ^= m_captureFrame;
+				m_captureFrame = false;
+				}
+				if(Settings::Instance().m_capturePicture){
+				Info("m_capturePicture test");
+				}
 
 				if (m_FrameRender->GetTexture())
-				{
-					m_videoEncoder->Transmit(m_FrameRender->GetTexture().Get(), m_presentationTime, m_targetTimestampNs, m_scheduler.CheckIDRInsertion());
+				{					
+					m_videoEncoder->Transmit(m_FrameRender->GetTexture().Get(), m_presentationTime, m_targetTimestampNs, m_scheduler.CheckIDRInsertion(),Settings::Instance().m_capturePicture);
 				}
 
 				m_encodeFinished.Set();
@@ -138,4 +146,6 @@
 		}
 
 		void CEncoder::CaptureFrame() {
+		// Capjay capture picture
+		 m_captureFrame = true;
 		}

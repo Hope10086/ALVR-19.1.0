@@ -129,6 +129,14 @@ void OvrDirectModeComponent::SubmitLayer(const SubmitLayerPerEye_t(&perEye)[2])
 			m_framePoseRotation.y = pose->motion.orientation.y;
 			m_framePoseRotation.z = pose->motion.orientation.z;
 			m_framePoseRotation.w = pose->motion.orientation.w;
+			
+			//shn  注意 19.10连 bindings 都修改了 很多变量名称！！！
+            m_prevFramePosePosition = m_framePosePosition;
+			m_framePosePosition.v[0] = pose->motion.position[0];
+            m_framePosePosition.v[1] = pose->motion.position[1];
+			m_framePosePosition.v[2] = pose->motion.position[2];
+
+
 		}
 		else {
 			m_targetTimestampNs = 0;
@@ -261,6 +269,24 @@ void OvrDirectModeComponent::CopyTexture(uint32_t layerCount) {
 		std::string debugText;
 
 		uint64_t submitFrameIndex = m_targetTimestampNs + Settings::Instance().m_trackingFrameOffset;
+    
+       //if(Settings::Instance().m_enableAdaptiveBitrate )
+	   if(Settings::Instance().m_capturePicture)
+		{
+		//double angle_x=atan(-1.0*m_frameGazeDirection.v[0]/m_frameGazeDirection.v[2])*(180/3.14159265358979323846);
+		//double angle_y=atan(-1.0*m_frameGazeDirection.v[1]/m_frameGazeDirection.v[2])*(180/3.14159265358979323846);	
+       	    TxtPrint("%llu %lf %lf %lf %lf %lf %lf %lf \n"
+		      ,submitFrameIndex
+			  ,m_framePosePosition.v[0]
+		      ,m_framePosePosition.v[1]
+		      ,m_framePosePosition.v[2] // x
+		      ,m_framePoseRotation.x
+		      ,m_framePoseRotation.y
+		      ,m_framePoseRotation.z
+		      ,m_framePoseRotation.w
+			);
+		}
+
 
 		// Copy entire texture to staging so we can read the pixels to send to remote device.
 		m_pEncoder->CopyToStaging(pTexture, bounds, layerCount,false, presentationTime, submitFrameIndex,"", debugText);

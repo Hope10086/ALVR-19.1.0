@@ -73,7 +73,7 @@ void Settings::Load()
 
 		m_flSecondsFromVsyncToPhotons = (float)config.get("seconds_from_vsync_to_photons").get<double>();
 
-		m_flIPD = 0.063;
+		m_flIPD = 0.0;
 
 		m_force3DOF = config.get("force_3dof").get<bool>();		
 		m_TrackingRefOnly = config.get("tracking_ref_only").get<bool>();
@@ -89,7 +89,11 @@ void Settings::Load()
 		m_entropyCoding = (uint32_t)config.get("entropy_coding").get<int64_t>();
 		m_refreshRate = (int)config.get("refresh_rate").get<int64_t>();
 		mEncodeBitrateMBs = (int)config.get("encode_bitrate_mbs").get<int64_t>();
-		m_enableAdaptiveBitrate = config.get("enable_adaptive_bitrate").get<bool>();
+		
+		//m_captureLayerDDSTrigger = config.get("enable_adaptive_bitrate").get<bool>();
+		m_enableAdaptiveBitrate  = config.get("enable_adaptive_bitrate").get<bool>();
+		
+
 		m_adaptiveBitrateMaximum = (int)config.get("bitrate_maximum").get<int64_t>();
 		m_adaptiveBitrateTarget = (int)config.get("latency_target").get<int64_t>();
 		m_adaptiveBitrateUseFrametime = config.get("latency_use_frametime").get<bool>();
