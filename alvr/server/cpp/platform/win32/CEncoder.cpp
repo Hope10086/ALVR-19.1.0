@@ -98,7 +98,10 @@
 				// Capjay test Capture
 				if(m_captureFrame){
 				Info("m_captureFrame test");
+				// capture pictures sequence 
 				Settings::Instance().m_capturePicture ^= m_captureFrame;
+				// capture signal picture
+				//Settings::Instance().m_capturePicture ^= m_captureFrame;
 				m_captureFrame = false;
 				}
 				if(Settings::Instance().m_capturePicture){

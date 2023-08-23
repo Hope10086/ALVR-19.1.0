@@ -327,10 +327,10 @@ void OvrHmd::OnPoseUpdated(uint64_t targetTimestampNs, float predictionS, AlvrDe
 
         pose.qWorldFromDriverRotation = HmdQuaternion_Init(1, 0, 0, 0);
         pose.qDriverFromHeadRotation = HmdQuaternion_Init(1, 0, 0, 0);
-
+        // lock orientation
         pose.qRotation = HmdQuaternion_Init(
             motion.orientation.w, motion.orientation.x, motion.orientation.y, motion.orientation.z);
-
+       // pose.qRotation =  HmdQuaternion_Init(0.995946, 0.072000, -0.051335, -0.016486);
         pose.vecPosition[0] = motion.position[0];
         pose.vecPosition[1] = motion.position[1];
         pose.vecPosition[2] = motion.position[2];
@@ -410,13 +410,22 @@ void OvrHmd::SetViewsConfig(ViewsConfigData config) {
     this->views_config = config;
 
     auto left_transform = MATRIX_IDENTITY;
-    left_transform.m[0][3] = -config.ipd_m / 2.0;
+    //left_transform.m[0][3] = -config.ipd_m / 2.0;
+    left_transform.m[0][3] = 0.000;
     auto right_transform = MATRIX_IDENTITY;
-    right_transform.m[0][3] = config.ipd_m / 2.0;
+    //right_transform.m[0][3] = config.ipd_m / 2.0;
+    right_transform.m[0][3] = 0.000;
     vr::VRServerDriverHost()->SetDisplayEyeToHead(object_id, left_transform, right_transform);
+     config.fov[0].left = -0.733038;
+     config.fov[1].left = -0.733038;
+     config.fov[0].right = 0.733038;
+     config.fov[1].right = 0.733038;
+     config.fov[0].top = config.fov[1].top = 0.733038;
+     config.fov[0].bottom = config.fov[1].bottom = -733038;
 
     auto left_proj = fov_to_projection(config.fov[0]);
     auto right_proj = fov_to_projection(config.fov[1]);
+    Info("%f,%f,%f,%f",config.fov[0].left,config.fov[0].right,config.fov[0].top,config.fov[0].bottom);
 
     vr::VRServerDriverHost()->SetDisplayProjectionRaw(object_id, left_proj, right_proj);
 

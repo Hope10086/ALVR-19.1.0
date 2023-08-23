@@ -9,12 +9,14 @@ void PoseHistory::OnPoseUpdated(uint64_t targetTimestampNs, AlvrDeviceMotion mot
 	TrackingHistoryFrame history;
 	history.targetTimestampNs = targetTimestampNs;
 	history.motion = motion;
-
+    //lock oriebtation
 	HmdMatrix_QuatToMat(motion.orientation.w,
 		motion.orientation.x,
 		motion.orientation.y,
 		motion.orientation.z,
 		&history.rotationMatrix);
+		// HmdMatrix_QuatToMat(0.995946, 0.072000, -0.051335, -0.016486,
+		// &history.rotationMatrix);
 
 	std::unique_lock<std::mutex> lock(m_mutex);
 	if (!m_transformIdentity) {

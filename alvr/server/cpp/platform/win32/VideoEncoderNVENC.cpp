@@ -134,7 +134,7 @@ void VideoEncoderNVENC::Transmit(ID3D11Texture2D *pTexture, uint64_t presentatio
       
 	}	
 // dds 写入
-   if (CapturePicture && capturecnt%4 ==0 )
+   if (CapturePicture && capturecnt%2 ==0 )
    {	
     wchar_t buf[1024];	
 	Info("capture start!");
